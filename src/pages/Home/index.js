@@ -1,37 +1,82 @@
 import React from 'react';
+import {useState } from 'react';
 import { Header } from "../../components/Header";
 import background from "../../assets/background.png";
 import ItemList from '../../components/ItemList'
 import "./styles.css";
 
 const App = ()=> {
-    return (
+  const [user, setUser] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
+  const [repos, setRespos] = useState(null);
+  
+  const handleGetData = async()=>{
+    const userData = await fetch(`https://api.github.com/users/${user}`);
+    const newUser =  await userData.json();
+
+    if(newUser.name){
+
+      const { avatar_url, name, bio, login } = newUser;
+      setCurrentUser( {avatar_url, name, bio, login});
+      
+
+
+      const reposData = await fetch(`https://api.github.com/users/${user}/repos`);
+      const newRepos =  await reposData.json();
+  
+      
+      if(newRepos.length){
+        setRespos(newRepos);
+        
+      }
+      
+    }
+
+  
+  }
+  
+  
+  return (
       <div className="App">
         <Header/>
         <div className="conteudo">
         <img src={background} className="background" alt="background app"/>
         <div className="info">
           <div>
-            <input className="input" name="usuario" placeholder="@username"/>
-            <button className="button">Buscar</button>
-          </div>
-          <div className="perfil">
-            <img src="https://avatars.githubusercontent.com/u/22668960?v=4"
-             className="profile" alt="imagem de perfil"/>
-            <div>
-              <h3>Franklin</h3>
-              <span>@arenas-franklin</span>
-              <p>Descrição </p>
-            </div>
-          </div>
-          <hr/>
+            <input value={user} 
+            onChange={event => setUser(event.target.value)} 
+            name="usuario" placeholder="@username"/>
 
-          <div>
-            <h4 className="repositorio">Repositorio</h4>
-            <ItemList title="teste 1" description="teste de decrição"></ItemList>
-            <ItemList title="teste 1" description="teste de decrição"></ItemList>
-            <ItemList title="teste 1" description="teste de decrição"></ItemList>
+            <button onClick={handleGetData} >Buscar</button>
           </div>
+
+          {currentUser?.name ? (
+            <>
+            <div className="perfil">
+              <img src={currentUser.avatar_url}
+               className="profile" alt="imagem de perfil"/>
+              <div>
+                <h3>{currentUser.name}</h3>
+                <span>{currentUser.login}</span>
+                <p>{currentUser.bio} </p>
+              </div>
+            </div>
+            <hr/>
+            </>
+          ): null}
+
+          {repos?.length ? (
+
+            <div>
+            <h4 className="repositorio">Repositorio</h4>
+              {repos.map(repo => (
+                <ItemList 
+                title={repo.name}
+                description={repo.description}></ItemList>
+
+              ))}
+            </div>
+            ): null}
 
         </div>
         </div>
