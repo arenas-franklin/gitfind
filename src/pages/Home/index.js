@@ -1,7 +1,8 @@
 import React from 'react';
 import { Header } from "../../components/Header";
-import background from "../../assets/background.png"
-import "./styles.css"
+import background from "../../assets/background.png";
+import ItemList from '../../components/ItemList'
+import "./styles.css";
 
 const App = ()=> {
     return (
@@ -24,6 +25,14 @@ const App = ()=> {
             </div>
           </div>
           <hr/>
+
+          <div>
+            <h4 className="repositorio">Repositorio</h4>
+            <ItemList title="teste 1" description="teste de decrição"></ItemList>
+            <ItemList title="teste 1" description="teste de decrição"></ItemList>
+            <ItemList title="teste 1" description="teste de decrição"></ItemList>
+          </div>
+
         </div>
         </div>
       </div>
